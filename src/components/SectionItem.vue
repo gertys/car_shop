@@ -1,10 +1,5 @@
 <template>
-    <router-link :to = "{
-    name: 'search', 
-    params: {
-        name: 'test'
-    }
-    }" >
+    <router-link :to="`/search/${this.link}`" class="card__title">
         <div class="sectionItem__wrapper">
             <div class="sectionItem-img">
                 <img src="../assets/breakSection.png" alt="">
@@ -28,6 +23,9 @@ import {RouterLink } from "vue-router";
             img: {
                 type: String,   
             },
+            link: {
+                type: String,
+            }
         },
     }
 </script>

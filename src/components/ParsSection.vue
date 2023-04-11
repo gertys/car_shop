@@ -7,8 +7,8 @@
             <div class="section__content">
                 <Advantages/>
                 <div class="section__item__wrapper">
-                    <div v-for="item in items" :key="item.id" class="section__wrapper__inner">
-                        <SectionItem :props="item" />
+                    <div v-for="item in categorys" :key="item.id" :name="item" class="section__wrapper__inner">
+                        <SectionItem :link="item"/>
                     </div>
                 </div>  
             </div>
@@ -20,13 +20,20 @@
 import UiContainer from './UI/UiContainer.vue';
 import SectionItem from './SectionItem.vue';
 import Advantages from './Advantages.vue';
+import axios from 'axios';
     export default {
         name : "ParsSection",
         components: {UiContainer, SectionItem, Advantages},
         data() {
             return {
                 items : ["Запчасти","Запчасти","Запчасти","Запчасти","Запчасти","Запчасти"],
+                categorys: null,
             }
+        },
+        mounted() {
+            axios
+                .get('https://fakestoreapi.com/products/categories')
+                .then(response => (this.categorys = response.data))
         }
     }
 </script>

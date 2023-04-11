@@ -1,15 +1,9 @@
 <template>
     <h1>shop</h1>
     <UiContainer>
-        <div class="products__wrapper">
-            <div class="products" v-for="item in shopItem" :key="item.id" :id="item.id">
-                <p>{{ item.title }}</p>
-                <p>{{ item.price }}Р</p>
-                <img :src="item.image" alt="photo" class="products__img">
-                <button class="cart__btn btn" @click="this.$store.dispatch('addItem', item.id);">Добавить в корзину</button>
-                <router-link :tag="button" :to="`/product/${item.id}`">
-                    <button class="cart__btn btn">Страница товара</button> 
-                </router-link>
+        <div class="cards">
+            <div class="cart" v-for="item in shopItem" :key="item.id" :id="item.id">
+                <ProductCart :item="item"/>
             </div>
         </div>
     </UiContainer>
@@ -18,6 +12,7 @@
 <script>
 import axios from "axios"
 import UiContainer from "../components/UI/UiContainer.vue"
+import ProductCart from "../components/ProductCart.vue"
     export default {
         data(){
             return {
@@ -25,64 +20,45 @@ import UiContainer from "../components/UI/UiContainer.vue"
             }
         },
         name: "Items",
-        components: {UiContainer},
+        components: {UiContainer, ProductCart},
         methods: {
 
         },
         created() {
             axios
                 .get('https://fakestoreapi.com/products?limit=10')
-                .then(response => (this.shopItem = response.data));
+                .then(response => (this.shopItem = response.data))
         }
     }
 </script>
 
 <style scoped>
-
-.products__wrapper{
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-wrap: wrap;
+.cards {
+  display: grid;
+  /* Автоматически заполняем на всю ширину grid-контейнера */
+  grid-template-columns: repeat(auto-fill, 225px);
+  width: 100%;
+  max-width: 1000px; /* Ширина grid-контейнера */
+  justify-content: center;
+  justify-items: center; /* Размещаем карточку по центру */
+  column-gap: 30px; /* Отступ между колонками */
+  row-gap: 40px; /* Отступ между рядами */
+  margin: 0 auto;
 }
 
-.products{
-    flex: 0 0 32%;
-    margin: 0 15px 15px 0;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-}
-.products__img{
-    width: 100px;
-    height: 100px;
+.card {
+  width: 225px;
+  min-height: 350px;
+  box-shadow: 1px 2px 4px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column; /* Размещаем элементы в колонку */
+  border-radius: 4px;
+  transition: 0.2s;
+  position: relative;
 }
 
-.cart__btn{
-    width: 130px;
-    height: 40px;
-    color: #fff;
-    border-radius: 5px;
-    padding: 10px 25px;
-    font-family: 'Lato', sans-serif;
-    font-weight: 500;
-    background: transparent;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    position: relative;
-    display: inline-block;
-    box-shadow:inset 2px 2px 2px 0px rgba(255,255,255,.5),
-    7px 7px 20px 0px rgba(0,0,0,.1),
-    4px 4px 5px 0px rgba(0,0,0,.1);
-    outline: none;
-}
-
-.btn{
-    background-color: #4dccc6;
-    background-image: linear-gradient(315deg, #4dccc6 0%, #96e4df 74%);
-    line-height: 42px;
-    padding: 0;
-    border: none;
+/* При наведении на карточку - меняем цвет тени */
+.card:hover {
+  box-shadow: 4px 8px 16px rgba(255, 102, 51, 0.2);
 }
 </style>

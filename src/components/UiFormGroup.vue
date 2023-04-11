@@ -18,7 +18,7 @@ export default {
     label: String,
   },
 };
-</script>
+</script> 
 
 <style scoped>
 .form-group {

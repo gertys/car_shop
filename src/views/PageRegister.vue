@@ -31,7 +31,7 @@
         </label>
         </UiFormGroup>
         <div class="form__buttons">
-        <button type="submit" class="button button_primary" :click="sendData">Зарегистрироваться</button>
+        <button type="submit" class="button button_primary" @click="sendData">Зарегистрироваться</button>
         </div>
         <div class="form__append">Уже есть аккаунт? <router-link :to="{ name: 'login' }" class="headAuth logRegLink">Регистрация</router-link></div>
     </form>
@@ -42,7 +42,7 @@
 <script>
 import UiFormGroup from '../components/UiFormGroup.vue';
 import UiContainer from '../components/UiContainer.vue';
-
+import axios from 'axios';
 export default {
 name: 'PageRegister',
 
@@ -54,6 +54,7 @@ data(){
         repeatPassword: "",
         checked: false,
         loading: false,
+        registerData: null,
     }
 },
 
@@ -68,23 +69,29 @@ methods: {
     },
 
     sendData(){
+        let data = {
+            'login' : this.login,
+            'password': this.password,
+            'name': this.name,
+            'repeatPassword': this.repeatPassword,
+        }
         this.loading = true
-        axios.post('/user', {
-            login: this.login,
-            password: this.password,
-            name: this.name,
-            repeatPassword: this.repeatPassword,
-        })
-        .then(function (response) {
-            this.loading = false
-            console.log(response);
-        })
-        .catch(function (error) {
-            console.log(error);
-        });
+            axios
+            .post('https://fakestoreapi.com/users',JSON.stringify(data), {
+                headers: {
+                'Content-Type': 'application/json'
+                }
+            })
+            .then(response => (this.registerData = response.data.id))
+        }
     },
-
-},
+    computed : {
+        isRegister(){
+            if(this.registerData !== null){
+                return this.$router.push({ name: 'login' })
+            }
+        }
+    },      
 };
 </script>
 

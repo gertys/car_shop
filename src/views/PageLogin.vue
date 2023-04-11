@@ -2,7 +2,7 @@
     <div class="page-auth">
       <UiContainer>
         <h2 class="title page-auth__title">Вход</h2>
-        <form class="form" @submit.prevent="handleSubmit">
+        <div class="form" @submit.prevent="handleSubmit">
           <UiFormGroup label="Email">
             <div class="input-group">
               <input name="email" type="email" placeholder="email" class="form-control" v-model="login"/>
@@ -14,17 +14,18 @@
             </div>
           </UiFormGroup>
           <div class="form__buttons">
-            <button type="submit" class="button button_primary button_block" :click="handleSubmit">Войти</button>
+            <button type="submit" class="button button_primary button_block" @click="sendData">Войти</button>
           </div>
           <div class="form__append">Нет аккаунта? <router-link :to="{ name: 'register' }" class="headAuth logRegLink">Регистрация</router-link></div>
-        </form>
+        </div>
       </UiContainer>
     </div>
   </template>
   
   <script>
   import UiContainer from '../components/UiContainer.vue';
-  
+  import UiFormGroup from '../components/UiFormGroup.vue';
+  import axios from 'axios';
   export default {
     name: 'PageLogin',
     
@@ -33,6 +34,7 @@
             login: "",
             password: "",
             loading: false,
+            loginData: null,
         }
     },
 
@@ -46,17 +48,28 @@
         this.$router.push(this.$route.query.from || { name: 'home' });
       },
       sendData(){
+        let data = {
+          "username": this.login,
+          "password" : this.password
+        }
         this.loading = true
-        axios({
-            method: 'get',
-            url: '/login',
-            })
-            .then(function (response) {
-                loading = false
-                this.$router.push(this.$route.query.from || { name: 'home' });
-        });
+        axios
+                .post('https://fakestoreapi.com/auth/login',JSON.stringify(data), {
+                  headers: {
+                    'Content-Type': 'application/json'
+                  }
+                })
+                .then(response => (this.loginData = response.data))
       },
     },
+    computed: {
+      isWatching(){
+        if(this.loginData.token !== null){
+          this.$store.dispatch('setUser', this.loginData.token)
+          return this.$router.push(this.$route.query.from || { name: 'home' })
+        }
+      },
+    }
   };
   </script>
   
